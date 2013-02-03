@@ -100,7 +100,7 @@ float fast_cos(float a)
 
 
 /**
- * Create a red ball sprite
+ * Create a ball sprite
  */
 SDL_Surface* sprite_create_ball(float rparam, float gparam, float bparam)
 {

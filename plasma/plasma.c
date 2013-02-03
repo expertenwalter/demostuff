@@ -101,7 +101,7 @@ void drawPlasma(SDL_Surface* screen, int time)
       float func1 = 64 + 63 * (fastSin((hypot((HEIGHT / 2) - y, (WIDTH / 2) - x) / 16) + (time / 2.0)));
       
       // Func2: The static plasma
-      float func2 = 64 + 63 * fastSin(x / (37.0 + 15.0 * fastCos(y / 74.0))) * fastCos(y / (31.0 + 11.0 * fastSin(x / 57.0)));
+      float func2 = 64 + 63 * fastSin(x / (37.0 + 15.0 * fastCos(y / 74.0))) * fastCos(y / (31.0 + 11.0 * fastSin(x / 57.0)) + (time / 4.0));
       
       // Combine the two functions and dra the pixel
       putpixel(screen, x, y, palette[(int) (func1 + func2)]);
@@ -145,6 +145,7 @@ int main(int argc, char** argv)
       switch (event.type) 
       {
 	case SDL_QUIT:
+	case SDL_KEYDOWN:
 	  keypress = 1;
 	  break;
       }
@@ -158,5 +159,6 @@ int main(int argc, char** argv)
   }
   
   // Exit gracefully
+  SDL_Quit();
   return EXIT_SUCCESS;
 }

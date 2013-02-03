@@ -10,9 +10,12 @@ static const int WIDTH = 640;
 static const int HEIGHT = 480;
 static const int DEPTH = 32;
 
+static const float MATH_PI = 3.1415926536;
+
 SDL_Surface *screen;
 
 Uint32 palette[256];
+float sintable[360];
 
 
 
@@ -28,7 +31,7 @@ void putpixel(SDL_Surface *surface, int x, int y, Uint32 pixel)
 void initPalette()
 {
   for(int i = 0; i < 256; i++)
-    palette[i] = (i << 16) + (256 - i);
+    palette[i] = (i << 16) + (i / 2 << 8) + (256 - i);
 }
 
 
@@ -45,13 +48,34 @@ void initSDL()
 }
 
 
+void initSinTable()
+{
+  for(int a = 0; a < 360; a++)
+  {
+    sintable[a] = sin((a * MATH_PI) / 180.0);
+  }
+}
+
+
+float fastSin(float a)
+{
+  return sintable[(int) (a * 180.0 / MATH_PI) % 360];
+}
+
+
+float fastCos(float a)
+{
+  return sintable[((int) (a * 180.0 / MATH_PI) + 90) % 360];
+}
+
+
 void drawPlasma(SDL_Surface* screen, int time)
 {
   for(int y = 0; y < HEIGHT; y++)
     for(int x = 0; x < WIDTH; x++)
     {
-      float func1 = 64 + 63 * (sin((hypot((HEIGHT / 2) - y, (WIDTH / 2) - x) / 16) + (time / 3.0)));
-      float func2 = 64 + 63 * sin(x / (37.0 + 15.0 * cos(y / 74.0))) * cos(y / (31.0 + 11.0 * sin(x / 57.0)));
+      float func1 = 64 + 63 * (fastSin((hypot((HEIGHT / 2) - y, (WIDTH / 2) - x) / 16) + (time / 2.0)));
+      float func2 = 64 + 63 * fastSin(x / (37.0 + 15.0 * fastCos(y / 74.0))) * fastCos(y / (31.0 + 11.0 * fastSin(x / 57.0)));
       putpixel(screen, x, y, palette[(int) (func1 + func2)]);
     }
 }
@@ -66,6 +90,7 @@ int main(int argc, char** argv)
   
   initSDL();
   initPalette();
+  initSinTable();
   
   while(!keypress) 
   {
@@ -90,7 +115,7 @@ int main(int argc, char** argv)
       }
     }
     
-    usleep(25000);
+    usleep(40000);
   }
   
   return EXIT_SUCCESS;

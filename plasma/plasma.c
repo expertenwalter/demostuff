@@ -131,7 +131,7 @@ int main(int argc, char** argv)
   
     // Draw the plasma
     drawPlasma(screen, t);
-    
+
     // Unlock the SDL surface if needed
     if(SDL_MUSTLOCK(screen))
       SDL_UnlockSurface(screen);
